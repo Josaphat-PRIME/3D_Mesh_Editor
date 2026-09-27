@@ -1,0 +1,94 @@
+\documentclass[a4paper,12pt]{report}
+
+% --- Encodage et Langue ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% --- Mathématiques ---
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+
+% --- Graphiques et Couleurs ---
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{float}
+\usepackage{subcaption}
+
+% --- Tableaux et Mise en page ---
+\usepackage{array, booktabs, longtable, adjustbox}
+\usepackage{enumerate}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm, headheight=25pt}
+
+% --- Code (Listings et Minted) ---
+\usepackage{listings}
+\usepackage{tcolorbox}
+\definecolor{LightGray}{gray}{0.9}
+
+% --- Sommaires locaux (minitoc) ---
+\usepackage{minitoc}
+\setcounter{minitocdepth}{2}
+\renewcommand{\mtctitle}{Sommaire du TP}
+
+% --- En-tête et Pied de page ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\includegraphics[height=1cm]{image/logo_Polytech_HORIZ_dijon}} % 
+\rhead{\today}
+\cfoot{Page \thepage}
+
+% --- Divers ---
+\usepackage{lipsum}
+\usepackage{titlesec}
+
+% Supprime le mot "Chapitre" et le numéro, ne garde que le titre
+\titleformat{\chapter}[hang]{\huge\bfseries}{\thechapter. }{0pt}{\huge\bfseries}
+% --- Initialisation ---
+\begin{document}
+	\dominitoc % Indispensable avant le premier chapitre
+	
+	% --- Page de Garde ---
+	\begin{titlepage}
+		\centering
+		\includegraphics[width=0.3\textwidth]{image/logo_Polytech_HORIZ_dijon}\par\vspace{1cm}
+		
+		{\scshape\LARGE Polytech Dijon \par}
+		\vspace{1cm}
+		
+		\textcolor{blue}{\rule{\linewidth}{0.5mm}} \\[0.4cm]
+		{\huge \bfseries COMPUTER SCIENCE \\[0.4cm] }
+		{\scshape\ éditeur de fichiers 3D\par}
+		\textcolor{blue}{\rule{\linewidth}{0.5mm}} \\[1.5cm]
+		
+		{\Large Compte rendu \par}
+		\vspace{2cm}
+		
+		\begin{minipage}{0.40\textwidth}
+			\begin{flushleft} \large
+				\emph{Réalisé par :}\\
+				BAKAI Mamalinesso\\
+				TATSADJIEU-KEMZEM Evrard\\
+			\end{flushleft}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.55\textwidth}
+			\begin{flushright} \large
+				\emph{Supervisé par :} \\
+				Mr YOHAN FOUGEROLLE
+			\end{flushright}
+		\end{minipage}
+		
+		\vfill
+		{\large \today \par}
+	\end{titlepage}
+		
+	\tableofcontents
+    \newpage
+	%-------------------------------Inclusion des parties---------------------------
+	\include{Modules/M1.tex}
+	\include{Modules/M2.tex}
+\end{document}
