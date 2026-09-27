@@ -3,3 +3,5 @@
 \contentsline {section}{\numberline {1.1}ici nous avons nos sous chapitres}{2}{}%
 \contentsline {chapter}{\numberline {2}ici nous avons nos chapitres module 2}{3}{}%
 \contentsline {section}{\numberline {2.1}ici nous avons nos sous chapitres}{3}{}%
+\contentsline {chapter}{\numberline {3}ici nous avons nos chapitres module 3}{4}{}%
+\contentsline {section}{\numberline {3.1}ici nous avons nos sous chapitres}{4}{}%
