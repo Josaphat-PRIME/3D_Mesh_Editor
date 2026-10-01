@@ -1,4 +1,332 @@
-\chapter{ici nous avons nos chapitres module 1 }
-	ici nous avons notre travail et nous allons insérer le module 1
+\chapter{Rapport 1}
+	
+\section{Introduction}
 
-\section{ici nous avons nos sous chapitres}
+Ce projet consiste à concevoir un éditeur de maillage 3D interactif en
+C++, permettant d'importer un fichier de maillage triangulaire, de
+l'afficher en trois dimensions, puis d'y effectuer des modifications
+topologiques en temps réel (ajout et suppression de faces, découpe
+d'arêtes, etc.).
+
+Le cœur du projet repose sur la structure de données \textbf{Half-Edge},
+qui représente chaque arête du maillage par deux demi-arêtes orientées
+en sens opposé. Cette organisation permet une navigation efficace entre
+sommets, arêtes et faces voisines, indispensable pour implémenter les
+opérations d'édition demandées.
+
+Le travail est réparti en binôme : Kevin prend en charge le moteur
+topologique bas niveau (structure de données, parsing de fichiers,
+opérations d'édition), tandis que Josaphat prend en charge le rendu 3D,
+l'interaction utilisateur et le système d'annulation/rétablissement
+(Command Pattern).
+
+Ce pré-rapport présente l'état d'avancement du projet à mi-septembre :
+l'architecture logicielle a été conçue (voir section~\ref{sec:uml}),
+un planning détaillé a été établi (section~\ref{sec:gantt}), et la
+compréhension de la structure Half Edge a été validée à travers des
+exemples concrets (section~\ref{sec:halfedge}).
+
+\section{Architecture logicielle (UML)}
+\label{sec:uml}
+
+Le diagramme ci-dessous présente les trois classes principales de notre
+moteur topologique et leurs relations.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{image/uml_halfedge.png}
+	\caption{Diagramme de classes du moteur Half-Edge}
+\end{figure}
+
+Le sommet (\textbf{Point}) et le triangle (\textbf{Triangle}) référencent
+chacun une demi-arête de leur voisinage. La classe \textbf{HalfEdge}
+concentre l'essentiel de la logique de navigation : elle pointe vers
+un sommet, une face, la demi arête suivante de son triangle, et sa
+demi-arêtee du triangle adjacent.
+
+\section{Planning (diagramme de Gantt)}
+\label{sec:gantt}
+
+Le diagramme ci dessous découpe le projet en 13 semaines, numérotées à
+partir du 23 septembre 2026. Le tableau~\ref{tab:semaines} précise les
+dates exactes de chaque semaine.
+
+\begin{ganttchart}[hgrid, vgrid]{1}{13}
+	\gantttitle{Semaines (23 sept -- 25 déc)}{13} \\
+	\gantttitlelist{1,...,13}{1} \\
+	\ganttbar{Diagramme UML}{1}{1} \\
+	\ganttbar{Diagramme Gantt + rédaction pré-rapport}{2}{3} \\
+	\ganttbar{Parsing .ply (Kevin)}{3}{5} \\
+	\ganttbar{Fenêtre + affichage OpenGL (Josaphat)}{3}{5} \\
+	\ganttbar{Rendu 3D complet (Josaphat)}{6}{8} \\
+	\ganttbar{Édition topologique (Kevin)}{9}{11} \\
+	\ganttbar{Undo/Redo (Josaphat)}{12}{12} \\
+	\ganttbar{Rédaction rapport final}{13}{13}
+\end{ganttchart}
+
+\begin{table}[h]
+	\centering
+	\small
+	\begin{tabular}{|c|l|}
+		\hline
+		\textbf{Semaine} & \textbf{Dates} \\
+		\hline
+		1  & 23 -- 29 septembre \\
+		2  & 30 septembre -- 6 octobre \\
+		3  & 7 -- 13 octobre \\
+		4  & 14 -- 20 octobre \\
+		5  & 21 -- 27 octobre \\
+		6  & 28 octobre -- 3 novembre \\
+		7  & 4 -- 10 novembre \\
+		8  & 11 -- 17 novembre \\
+		9  & 18 -- 24 novembre \\
+		10 & 25 novembre -- 1 décembre \\
+		11 & 2 -- 8 décembre \\
+		12 & 9 -- 15 décembre \\
+		13 & 16 -- 25 décembre \\
+		\hline
+	\end{tabular}
+	\caption{Correspondance entre les numéros de semaine et les dates}
+	\label{tab:semaines}
+\end{table}
+
+\subsection{Description des tâches}
+
+\begin{itemize}
+	\item \textbf{Diagramme UML} (semaine 1) : conception des classes
+	du moteur Half-Edge (\texttt{Point}, \texttt{Triangle},
+	\texttt{HalfEdge}) et de leurs relations, en s'assurant que
+	l'interface exposée couvre les besoins du rendu.
+	
+	\item \textbf{Diagramme Gantt + rédaction pré-rapport}
+	(semaines 2--3) : construction du planning détaillé et rédaction
+	du présent pré-rapport en \LaTeX{} (introduction, architecture,
+	planning, structure Half-Edge, risques).
+	
+	\item \textbf{Parsing .ply (Kevin)} (semaines 3--5) : lecture
+	d'un fichier de maillage au format \texttt{.ply}, et
+	reconstruction complète de la structure Half-Edge en mémoire
+	(sommets, faces, demi-arêtes, jumelles) à partir des listes
+	brutes du fichier.
+	
+	\item \textbf{Fenêtre + affichage OpenGL (Josaphat)}
+	(semaines 3--5) : mise en place d'une fenêtre graphique
+	(OpenGL/GLFW ou SFML) fonctionnelle, sans logique de maillage
+	pour l'instant a pour objectif objectif : avoir un socle d'affichage prêt à
+	recevoir les données du moteur topologique.
+	
+	\item \textbf{Rendu 3D complet (Josaphat)} (semaines 6--8) :
+	affichage du maillage importé par Kevin, en mode filaire
+	(wireframe) et surfacique (shaded), avec une caméra manipulable
+	et un système de sélection à la souris (sommet/arête/face).
+	
+	\item \textbf{Édition topologique (Kevin)} (semaines 9--11) :
+	implémentation des quatre opérations d'édition demandées par le
+	sujet, création de face, découpe d'arête (split), rotation
+	d'arête (flip), suppression, en garantissant la cohérence des
+	quatre pointeurs de chaque demi arête après chaque opération.
+	
+	\item \textbf{Undo/Redo (Josaphat)} (semaine 12) :
+	implémentation du \emph{Command Pattern} pour permettre
+	d'annuler et de rejouer chaque opération d'édition
+	(Ctrl+Z / Ctrl+Y).
+	
+	\item \textbf{Rédaction rapport final} (semaine 13) : rédaction
+	du rapport complet et du manuel utilisateur (captures d'écran,
+	justification des choix d'architecture), relecture croisée, et
+	finalisation du dépôt GitHub.
+\end{itemize}
+
+\section{La structure Half-Edge}
+\label{sec:halfedge}
+
+\subsection{Principe général}
+La structure Half Edge est une représentation de maillage triangulaire
+optimisée pour la navigation topologique. Contrairement à une simple liste
+de triangles, chaque arête est divisée en deux « demi arêtes » orientées
+en sens opposé, chacune appartenant à l'un des deux triangles adjacents.
+Cette organisation permet de retrouver rapidement les voisins d'un sommet,
+d'une arête ou d'une face, sans parcourir l'intégralité du maillage.
+
+\subsection{Les 4 pointeurs d'une demi-arête}
+Chaque demi-arête stocke exactement 4 informations :
+\begin{itemize}
+	\item \textbf{vertex} : le sommet vers lequel elle pointe (son arrivée)
+	\item \textbf{face} : le triangle auquel elle appartient
+	\item \textbf{next} : la demi-arête suivante autour du même triangle
+	\item \textbf{twin} : sa demi-arête jumelle, côté triangle voisin
+	(\texttt{nullptr} si l'arête est sur le bord du maillage)
+\end{itemize}
+
+\subsection{Exemple concret}
+Considérons deux triangles adjacents partageant une arête commune,
+de sommets $\{0,1,2\}$ et $\{0,2,3\}$. Le tableau ci-dessous détaille
+les 4 pointeurs de chacune des 6 demi-arêtes :
+
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\textbf{Half-Edge} & \textbf{Vertex} & \textbf{Twin} & \textbf{Next} & \textbf{Face} \\
+		\hline
+		HE0 & 1 & -- & HE1 & F0 \\
+		HE1 & 2 & -- & HE2 & F0 \\
+		HE2 & 0 & HE3 & HE0 & F0 \\
+		HE3 & 2 & HE2 & HE4 & F1 \\
+		HE4 & 3 & -- & HE5 & F1 \\
+		HE5 & 0 & -- & HE3 & F1 \\
+		\hline
+	\end{tabular}
+\end{center}
+
+On observe que HE2 et HE3 sont jumelles : elles parcourent la même
+arête physique (entre les sommets 0 et 2) en sens opposé, chacune
+appartenant à l'un des deux triangles. Les demi arêtes sans jumelle
+(twin = --) correspondent aux arêtes de bord du maillage.
+
+\subsection{Algorithme : parcourir les sommets d'une face}
+
+Cet algorithme répond à une question simple : \emph{« étant donné un
+	triangle, quels sont ses 3 sommets ? »}. Grâce à la structure Half-Edge,
+il n'est pas nécessaire de stocker directement les 3 sommets dans la
+classe \texttt{Face} : une seule demi-arête de référence suffit, les
+deux autres étant retrouvées en suivant le pointeur \texttt{next}.
+
+Le principe est le suivant :
+\begin{enumerate}
+	\item On part de la demi-arête de référence de la face
+	(\texttt{f->edge}), stockée à la fois dans \texttt{start} (le
+	point de départ, qui ne bouge jamais) et \texttt{current} (la
+	demi-arête que l'on est en train de visiter).
+	\item À chaque tour de boucle, on récupère le sommet vers lequel
+	pointe \texttt{current} (\texttt{current->vertex}), puis on avance
+	à la demiarête suivante du même triangle
+	(\texttt{current = current->next}).
+	\item On répète l'opération jusqu'à revenir à la demi-arête de
+	départ (\texttt{current == start}), ce qui signifie que l'on a
+	fait le tour complet du triangle.
+\end{enumerate}
+
+Comme un triangle possède exactement 3 demi-arêtes reliées en boucle
+par \texttt{next} (demi arête~1~$\to$~demi-arête~2~$\to$~demi-arête~3~
+$\to$~retour à la demi arête~1), la boucle s'exécute nécessairement
+3 fois avant de s'arrêter.
+
+\begin{verbatim}
+	void iterateFaceVertices(Face* f) {
+		HalfEdge* start = f->edge;
+		HalfEdge* current = start;
+		do {
+			Vertex* v = current->vertex;
+			// traiter v
+			current = current->next;
+		} while (current != start);
+	}
+\end{verbatim}
+
+L'utilisation d'une boucle \texttt{do...while} plutôt qu'un simple
+\texttt{while} est volontaire : elle garantit que le premier sommet
+est bien traité avant la première vérification de la condition
+d'arrêt, condition qui serait vraie dès le départ
+(\texttt{current == start}) si l'on utilisait un \texttt{while}
+classique.
+
+\subsection{Algorithme : parcourir les demi-arêtes autour d'un sommet}
+
+Cet algorithme répond à la question inverse de la précédente :
+\emph{« étant donné un sommet, quelles sont les demi-arêtes (et donc
+	les triangles) qui l'entourent ? »}. C'est notamment ce dont on a
+besoin pour savoir quels triangles sont affectés lorsqu'on déplace ou
+supprime un sommet.
+
+Contrairement au parcours d'un triangle (qui n'utilise que
+\texttt{next}), tourner autour d'un sommet demande d'alterner
+\textbf{deux} pointeurs :
+
+\begin{enumerate}
+	\item On part d'une demi-arête connue partant du sommet
+	(\texttt{v->outgoing}).
+	\item Pour passer à la demi-arête suivante autour du même sommet,
+	on saute d'abord vers la jumelle de la demi-arête courante
+	(\texttt{current->twin}), qui appartient au triangle voisin, puis
+	on prend son \texttt{next} : cela donne directement la demi-arête
+	suivante qui repart du même sommet, mais dans ce triangle voisin.
+	\item On répète l'opération jusqu'à revenir à la demi-arête de
+	départ, ce qui signifie que l'on a fait le tour complet des
+	triangles autour du sommet.
+\end{enumerate}
+
+\textbf{Cas particulier : les sommets de bord.} Si le sommet se trouve
+sur le contour du maillage, l'une des demi-arêtes rencontrées durant
+le parcours n'aura pas de jumelle (\texttt{twin == nullptr}), car il
+n'existe pas de triangle de ce côté. Il est indispensable de vérifier
+cette condition à chaque itération : sans cela, l'appel
+\texttt{current->twin->next} provoquerait un accès mémoire invalide
+et ferait planter le programme.
+
+\begin{verbatim}
+	void iterateOutgoingHalfEdges(Vertex* v) {
+		HalfEdge* start = v->outgoing;
+		HalfEdge* current = start;
+		
+		do {
+			// current est une demi-arête partant de v
+			// traiter current
+			
+			if (current->twin == nullptr) {
+				// bord du maillage atteint : on ne peut pas continuer
+				// dans ce sens (une gestion plus complète parcourrait
+				// alors le sommet dans l'autre sens)
+				break;
+			}
+			current = current->twin->next;
+		} while (current != start);
+	}
+\end{verbatim}
+
+Contrairement au parcours d'une face, qui effectue toujours exactement
+3 itérations, le nombre de tours ici dépend du nombre de triangles
+adjacents au sommet, qui varie selon la position de celui ci dans le
+maillage.
+
+\section{Analyse des risques}
+
+\begin{itemize}
+	\item \textbf{Gestion mémoire des pointeurs.} La structure
+	Half-Edge repose entièrement sur des pointeurs bruts
+	(\texttt{Vertex*}, \texttt{HalfEdge*}, \texttt{Face*}). Une
+	mauvaise libération de mémoire, ou un pointeur laissé invalide
+	après une opération d'édition (split, flip, suppression), peut
+	provoquer des plantages difficiles à déboguer. \\
+	\textit{Mitigation :} valider systématiquement chaque opération
+	d'édition sur des maillages simples avant de les généraliser, et
+	utiliser un outil comme Valgrind pour détecter les fuites mémoire.
+	
+	\item \textbf{Synchronisation entre les deux parties du code.}
+	Le moteur topologique (Kevin) et le rendu (Josaphat) sont
+	développés en parallèle. Une divergence dans l'API attendue par
+	l'un et fournie par l'autre pourrait ralentir l'intégration. \\
+	\textit{Mitigation :} définir l'interface \texttt{HalfEdgeMesh}
+	dès la phase d'architecture (section~\ref{sec:uml}) et prévoir un
+	point de synchronisation hebdomadaire.
+	
+	\item \textbf{Cas limites topologiques.} Certaines opérations
+	(suppression d'un sommet de bord, flip d'une arête déjà sur le
+	contour) demandent une gestion particulière lorsque le pointeur
+	\texttt{twin} vaut \texttt{nullptr}. Un oubli de vérification
+	peut provoquer un plantage à l'exécution. \\
+	\textit{Mitigation :} systématiser les tests sur des maillages
+	ouverts (avec bord) en plus des maillages fermés.
+	
+	\item \textbf{Disponibilité et charge de travail.} Le projet
+	représente une charge de travail répartie sur plusieurs mois, en
+	parallèle d'autres cours et projets du semestre. \\
+	\textit{Mitigation :} suivre le planning établi
+	(section~\ref{sec:gantt}), avec des jalons intermédiaires
+	permettant de détecter rapidement un retard.
+	
+	\item \textbf{Plan B en cas de retard important.} Si le calendrier
+	ne peut être tenu, les fonctionnalités sacrifiées en priorité
+	seront le flip d'arête et les extensions originales (formats
+	\texttt{.wrl}/\texttt{.iv}), au profit du cœur fonctionnel du
+	projet : parsing, affichage, split d'arête, et suppression.
+\end{itemize}
